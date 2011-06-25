@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/libunwind.so.* usr/lib
+debian/tmp/usr/lib/libunwind-*.so.* usr/lib

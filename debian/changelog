@@ -1,0 +1,158 @@
+libunwind (0.99-0.3) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Don't ship .la files (Closes: #622440).
+  * Build for powerpc (Closes: #556909).
+
+ -- Luk Claes <luk@debian.org>  Sat, 25 Jun 2011 16:05:02 +0200
+
+libunwind (0.99-0.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * debian/control: Fix "libunwind7 is not required on all archs but ia64"
+    The priority was erroneously set high. (Closes: #543346)
+  * i386 libraries are now provided. (Closes: #275639)
+  * debian/rules: use dpatch.
+  * debian/patches/090828-rpath.dpatch: fixed the rpath issue.
+
+ -- Daigo Moriwaki <daigo@debian.org>  Thu, 27 Aug 2009 23:58:37 +0900
+
+libunwind (0.99-0.1) unstable; urgency=low
+
+  [ Monty Taylor ]
+  * Non-maintainer upload. (Closes: #530885) 
+  * New upstream release (Closes: #487316)
+
+  [ Daigo Moriwaki ]
+  * debian/libunwind*.install: 
+    - libraries install into /usr/lib.
+    - regular packages contain shared libraries while -dev packages contain
+      static libraries.
+  * debian/control: libunwind7's section is now libs.
+
+ -- Daigo Moriwaki <daigo@debian.org>  Sun, 23 Aug 2009 10:37:50 +0900
+
+libunwind (0.98.5-8) unstable; urgency=low
+
+  * Set priority to package libunwind7 to required as libstdc++5 of
+    priority required depend on libunwind7. Close: bug#317375, bug#317374
+  * Do not force g++ version to 3.4
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Fri, 15 Jul 2005 16:05:22 -0500
+
+libunwind (0.98.5-7) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Matthias Klose <doko@debian.org>  Tue,  7 Jun 2005 12:33:57 +0000
+
+libunwind (0.98.5-6) experimental; urgency=low
+
+  * Fix libunwind7 shlibs version string.
+
+ -- Matthias Klose <doko@debian.org>  Wed,  4 May 2005 07:22:10 +0200
+
+libunwind (0.98.5-5) experimental; urgency=low
+
+  * Tighten libunwind7 shlibs version to 0.98.5-4 (the first version, which
+    includes libunwind.so.7.
+
+ -- Matthias Klose <doko@debian.org>  Wed,  4 May 2005 04:49:44 +0000
+
+libunwind (0.98.5-4) experimental; urgency=low
+
+  * Install the unwind library in the libunwind7 package, not libgcc1.
+
+ -- Matthias Klose <doko@debian.org>  Tue,  3 May 2005 14:50:20 +0000
+
+libunwind (0.98.5-1) unstable; urgency=low
+
+  * New upstream release - bug correction only:
+       - Fix an off-by-1 bug in the handling of the dynamic ALIAS directive.
+       - Fix a bug in libunwind-ptrace which could cause crash due to
+         extraneous munmap() calls.
+       - Fix a typo in the man-page of unw_create_addr_space()
+
+ -- Matthieu Delahaye <delahaym@debian.org>  Fri, 22 Apr 2005 11:12:14 -0500
+
+libunwind (0.98.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Thu, 24 Feb 2005 16:12:19 -0600
+
+libunwind (0.98.3-3) unstable; urgency=high
+
+  * Tighten dependency on libgcc1.
+
+ -- Matthias Klose <doko@debian.org>  Thu, 16 Dec 2004 15:36:15 -0800
+
+libunwind (0.98.3-2) unstable; urgency=low
+
+  * Depend on libgcc1, for the sarge release, libunwind.so.7 is built
+    by the gcc-3.4 source package.
+
+ -- Matthias Klose <doko@debian.org>  Fri, 26 Nov 2004 00:48:43 +0100
+
+libunwind (0.98.3-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Tue, 16 Nov 2004 16:38:54 -0600
+
+libunwind (0.98.2-2) unstable; urgency=low
+
+  * Remove libatomic-ops depedency
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Tue,  16 Nov 2004 09:20:00 -0500
+
+libunwind (0.98.2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Thu,  4 Nov 2004 19:08:59 -0600
+
+libunwind (0.98.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Major soversion changed in upstream source: new packages libunwind7(-dev)
+    and libunwind-setjmp0(-dev)
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Fri,  22 Oct 2004 15:03:30 -0500
+
+libunwind (0.98-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Thu,  9 Sep 2004 18:28:49 -0500
+
+libunwind (0.97-2) unstable; urgency=low
+
+  * Build libunwind against libatomic-ops
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Fri,  28 May 2004 14:21:39 +0200
+
+libunwind (0.97-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Fri,  7 May 2004 14:25:39 +0200
+
+libunwind (0.96-2) unstable; urgency=low
+
+  * Removed --disable-__thread from configure options 
+  * Forced Deps to libc6.1 and libc6.1-dev (>=2.3.2-ds1-8) for NTPL support
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Fri, 06 Feb 2004 10:29:30 +0100
+
+libunwind (0.96-1) unstable; urgency=low
+
+  * Initial Release with inputs from Al Stone <ahs3@fc.hp.com>. 
+  * Added Al Stone <ahs3@debian.org> to Uploaders.
+  * Closes: bug#184751 (Initial ITP)
+  * Closes: bug#215185 (ITP merged with #184751)
+  * Upgraded to latest rev of Debian policy
+
+ -- Matthieu Delahaye <matthieu@debian.org>  Thu, 11 Dec 2003 10:13:55 +0100
+
+

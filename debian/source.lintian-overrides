@@ -1,0 +1,4 @@
+libunwind source: ancient-autotools-helper-file aux/config.sub 2002-03-07
+libunwind source: ancient-libtool aux/ltmain.sh 1.4.3
+libunwind source: ancient-autotools-helper-file aux/config.guess 2002-03-20
+

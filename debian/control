@@ -1,0 +1,65 @@
+Source: libunwind
+Priority: optional
+Section: libs
+Maintainer: Matthieu Delahaye <matthieu@debian.org>
+Uploaders: Al Stone <ahs3@debian.org>
+Build-Depends: debhelper (>> 4.0.0), libatomic-ops-dev (>> 0.5.1), dpatch, autoconf, automake, libtool
+Standards-Version: 3.6.1
+
+Package: libunwind7-dev
+Section: libdevel
+Architecture: ia64 i386 amd64 ppc64 powerpc
+Depends: libunwind7 (= ${binary:Version})
+Conflicts: libunwind1-dev
+Description: A library to determine the call-chain of a program - development
+ The primary goal of this project is to define a portable and efficient C
+ programming interface (API) to determine the call-chain of a program.
+ The API additionally provides the means to manipulate the preserved
+ (callee-saved) state of each call-frame and to resume execution at any
+ point in the call-chain (non-local goto). The API supports both local
+ (same-process) and remote (across-process) operation. As such, the API
+ is useful in a number of applications.
+ .
+ This package includes the development support files. 
+
+Package: libunwind7
+Section: libs
+Architecture: ia64 i386 amd64 ppc64 powerpc
+Depends: ${shlibs:Depends}
+Replaces: libgcc1 (<< 1:4.0.0-2)
+Description: A library to determine the call-chain of a program - runtime
+ The primary goal of this project is to define a portable and efficient C
+ programming interface (API) to determine the call-chain of a program.
+ The API additionally provides the means to manipulate the preserved
+ (callee-saved) state of each call-frame and to resume execution at any
+ point in the call-chain (non-local goto). The API supports both local
+ (same-process) and remote (across-process) operation. As such, the API
+ is useful in a number of applications.
+ .
+ This package includes the shared libraries
+
+Package: libunwind-setjmp0-dev
+Section: libdevel
+Architecture: ia64 i386 amd64 ppc64 powerpc
+Depends: libunwind7-dev (= ${binary:Version}), libunwind-setjmp0 (= ${binary:Version}) 
+Description: A libunwind-based non local goto - development
+ The unwind-setjmp library offers a libunwind-based implementation of
+ non-local gotos. This implementation is intended to be a drop-in
+ replacement for the normal, system-provided routines of the same name.
+ The main advantage of using the unwind-setjmp library is  that  setting
+ up a non-local goto via one of the setjmp() routines is very fast.
+ .
+ This package includes the development support files
+
+Package: libunwind-setjmp0
+Section: libs
+Architecture: ia64 i386 amd64 ppc64 powerpc
+Depends: ${shlibs:Depends}
+Description: A libunwind-based non local goto - runtime
+ The unwind-setjmp library offers a libunwind-based implementation of
+ non-local gotos. This implementation is intended to be a drop-in
+ replacement for the normal, system-provided routines of the same name.
+ The main advantage of using the unwind-setjmp library is  that  setting
+ up a non-local goto via one of the setjmp() routines is very fast.
+ .
+ This package includes the shared library 
