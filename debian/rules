@@ -34,7 +34,7 @@ major=2
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	cp -vf /usr/share/misc/config.sub /usr/share/misc/config.guess .
+	cp -vf /usr/share/misc/config.sub /usr/share/misc/config.guess $(CURDIR)
 	autoreconf --force --install --include=config
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 
