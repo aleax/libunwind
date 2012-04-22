@@ -1,3 +1,19 @@
+libunwind (0.99-0.4) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Remove deprecated dpatch and upgrade to packaging format "3.0 quilt".
+  * Update to Standards-Version to 3.9.3, debhelper to 9, add autotools-dev.
+  * Add build-arch and build-indep targets, use dh_prep and
+    correct config.* file treatment in rules file.
+  * Update URL in watch and copyright file.
+  * Delete source.lintian-overrides; no longer needed.
+  * Fix binary-control-field-duplicates-source (Lintian).
+  * Fix diff-contains-substvars (Lintian)
+  * Fix no-homepage-field (Lintian).
+  * Fix description-synopsis-starts-with-article (Lintian).
+
+ -- Jari Aalto <jari.aalto@cante.net>  Sat, 21 Apr 2012 13:29:37 +0300
+
 libunwind (0.99-0.3) unstable; urgency=low
 
   * Non-maintainer upload.

@@ -1,7 +1,7 @@
 This package was debianized by Matthieu Delahaye <matthieu@debian.org> on
 Tue, 01 Apr 2003 17:37:16 +0200.
 
-It was downloaded from http://www.hpl.hp.com/research/linux/libunwind/
+It was downloaded from http://www.nongnu.org/libunwind
 
 Upstream Author: David Mosberger <davidm@hpl.hp.com>
 
