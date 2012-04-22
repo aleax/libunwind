@@ -1,5 +1,6 @@
 libunwind (0.99-0.4) unstable; urgency=low
 
+  [ Jari Aalto ]
   * Non-maintainer upload.
   * Remove deprecated dpatch and upgrade to packaging format "3.0 quilt".
   * Update to Standards-Version to 3.9.3, debhelper to 9, add autotools-dev.
@@ -12,7 +13,15 @@ libunwind (0.99-0.4) unstable; urgency=low
   * Fix no-homepage-field (Lintian).
   * Fix description-synopsis-starts-with-article (Lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Sat, 21 Apr 2012 13:29:37 +0300
+  [ Daigo Moriwaki ]
+  * Applied a patch from Jari Aalto. (Closes: #669713)
+  * debian/control:
+   + Added new fields: Vcs-Git, Vcs-Browser and DM-Upload-Allowed.
+   + Added myself to Maintainer, after no response from the previous
+     maintainers since May 2009.
+  * NMU version 0.99-0.3 has been applied. (Closes: #631622)
+
+ -- Daigo Moriwaki <daigo@debian.org>  Sun, 22 Apr 2012 19:22:33 +0900
 
 libunwind (0.99-0.3) unstable; urgency=low
 

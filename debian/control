@@ -1,11 +1,14 @@
 Source: libunwind
 Priority: optional
 Section: libs
-Maintainer: Matthieu Delahaye <matthieu@debian.org>
-Uploaders: Al Stone <ahs3@debian.org>
+Maintainer: Daigo Moriwaki <daigo@debian.org>
+Uploaders: Matthieu Delahaye <matthieu@debian.org>, Al Stone <ahs3@debian.org>
 Build-Depends: debhelper (>= 9), libatomic-ops-dev (>> 0.5.1), autoconf, automake, libtool, autotools-dev
 Standards-Version: 3.9.3
 Homepage: http://www.nongnu.org/libunwind
+Vcs-Git: git://git.debian.org/git/collab-maint/libunwind.git
+Vcs-Browser: http://git.debian.org/?p=collab-maint/libunwind.git
+DM-Upload-Allowed: yes
 
 Package: libunwind7-dev
 Section: libdevel
