@@ -1,8 +1,5 @@
 /* libunwind - a platform-independent unwind library
-   Copyright (C) 2002-2003 Hewlett-Packard Co
-	Contributed by David Mosberger-Tang <davidm@hpl.hp.com>
-
-   Modified for x86_64 by Max Asbock <masbock@us.ibm.com>
+   Copyright 2011 Linaro Limited
 
 This file is part of libunwind.
 
@@ -25,44 +22,34 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#include "unwind_i.h"
+#ifndef ARM_EX_TABLES_H
+#define ARM_EX_TABLES_H
 
-#ifdef __linux__
-PROTECTED int
-unw_is_signal_frame (unw_cursor_t *cursor)
+typedef enum arm_exbuf_cmd {
+  ARM_EXIDX_CMD_FINISH,
+  ARM_EXIDX_CMD_DATA_PUSH,
+  ARM_EXIDX_CMD_DATA_POP,
+  ARM_EXIDX_CMD_REG_POP,
+  ARM_EXIDX_CMD_REG_TO_SP,
+  ARM_EXIDX_CMD_VFP_POP,
+  ARM_EXIDX_CMD_WREG_POP,
+  ARM_EXIDX_CMD_WCGR_POP,
+  ARM_EXIDX_CMD_RESERVED,
+  ARM_EXIDX_CMD_REFUSED,
+} arm_exbuf_cmd_t;
+
+struct arm_exbuf_data
 {
-  struct cursor *c = (struct cursor *) cursor;
-  unw_word_t w0, w1, ip;
-  unw_addr_space_t as;
-  unw_accessors_t *a;
-  void *arg;
-  int ret;
+  arm_exbuf_cmd_t cmd;
+  uint32_t data;
+};
 
-  as = c->dwarf.as;
-  a = unw_get_accessors (as);
-  arg = c->dwarf.as_arg;
+#define arm_exidx_extract	UNW_OBJ(arm_exidx_extract)
+#define arm_exidx_decode	UNW_OBJ(arm_exidx_decode)
+#define arm_exidx_apply_cmd	UNW_OBJ(arm_exidx_apply_cmd)
 
-  /* Check if RIP points at sigreturn sequence.
-     on x86_64 Linux that is (see libc.so):
-     48 c7 c0 0f 00 00 00 mov $0xf,%rax
-     0f 05                syscall
-     66                   data16
-  */
+int arm_exidx_extract (struct dwarf_cursor *c, uint8_t *buf);
+int arm_exidx_decode (const uint8_t *buf, uint8_t len, struct dwarf_cursor *c);
+int arm_exidx_apply_cmd (struct arm_exbuf_data *edata, struct dwarf_cursor *c);
 
-  ip = c->dwarf.ip;
-  if ((ret = (*a->access_mem) (as, ip, &w0, 0, arg)) < 0
-      || (ret = (*a->access_mem) (as, ip + 8, &w1, 0, arg)) < 0)
-    return 0;
-  w1 &= 0xff;
-  return (w0 == 0x0f0000000fc0c748 && w1 == 0x05);
-}
-
-#else /* __linux__ */
-
-PROTECTED int
-unw_is_signal_frame (unw_cursor_t *cursor)
-{
-  printf ("%s: implement me\n", __FUNCTION__);
-  return -UNW_ENOINFO;
-}
-#endif /* __linux__ */
+#endif // ARM_EX_TABLES_H

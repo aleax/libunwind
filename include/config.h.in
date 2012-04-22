@@ -1,13 +1,74 @@
 /* include/config.h.in.  Generated from configure.in by autoheader.  */
 
+/* Block signals before mutex operations */
+#undef CONFIG_BLOCK_SIGNALS
+
 /* Enable Debug Frame */
 #undef CONFIG_DEBUG_FRAME
+
+/* Support for Microsoft ABI extensions */
+#undef CONFIG_MSABI_SUPPORT
+
+/* Define to 1 if you want every memory access validated */
+#undef CONSERVATIVE_CHECKS
 
 /* Define to 1 if you have the <asm/ptrace_offsets.h> header file. */
 #undef HAVE_ASM_PTRACE_OFFSETS_H
 
 /* Define to 1 if you have the <atomic_ops.h> header file. */
 #undef HAVE_ATOMIC_OPS_H
+
+/* Define to 1 if you have the declaration of `PTRACE_CONT', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PTRACE_CONT
+
+/* Define to 1 if you have the declaration of `PTRACE_POKEDATA', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PTRACE_POKEDATA
+
+/* Define to 1 if you have the declaration of `PTRACE_POKEUSER', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PTRACE_POKEUSER
+
+/* Define to 1 if you have the declaration of `PTRACE_SINGLESTEP', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PTRACE_SINGLESTEP
+
+/* Define to 1 if you have the declaration of `PTRACE_SYSCALL', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PTRACE_SYSCALL
+
+/* Define to 1 if you have the declaration of `PTRACE_TRACEME', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PTRACE_TRACEME
+
+/* Define to 1 if you have the declaration of `PT_CONTINUE', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PT_CONTINUE
+
+/* Define to 1 if you have the declaration of `PT_GETFPREGS', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PT_GETFPREGS
+
+/* Define to 1 if you have the declaration of `PT_GETREGS', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PT_GETREGS
+
+/* Define to 1 if you have the declaration of `PT_IO', and to 0 if you don't.
+   */
+#undef HAVE_DECL_PT_IO
+
+/* Define to 1 if you have the declaration of `PT_STEP', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PT_STEP
+
+/* Define to 1 if you have the declaration of `PT_SYSCALL', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PT_SYSCALL
+
+/* Define to 1 if you have the declaration of `PT_TRACE_ME', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PT_TRACE_ME
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
@@ -42,6 +103,9 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* Define to 1 if you have the `mincore' function. */
+#undef HAVE_MINCORE
+
 /* Define to 1 if the system has the type `sighandler_t'. */
 #undef HAVE_SIGHANDLER_T
 
@@ -60,8 +124,17 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* Define to 1 if `dlpi_subs' is member of `struct dl_phdr_info'. */
+/* Define to 1 if `dlpi_subs' is a member of `struct dl_phdr_info'. */
 #undef HAVE_STRUCT_DL_PHDR_INFO_DLPI_SUBS
+
+/* Define to 1 if you have the <sys/endian.h> header file. */
+#undef HAVE_SYS_ENDIAN_H
+
+/* Define to 1 if you have the <sys/procfs.h> header file. */
+#undef HAVE_SYS_PROCFS_H
+
+/* Define to 1 if you have the <sys/ptrace.h> header file. */
+#undef HAVE_SYS_PTRACE_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
@@ -81,6 +154,10 @@
 /* Define to 1 if __thread keyword is supported by the C compiler. */
 #undef HAVE___THREAD
 
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
+
 /* Define to 1 if your C compiler doesn't accept -c and -o together. */
 #undef NO_MINUS_C_MINUS_O
 
@@ -98,6 +175,9 @@
 
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION

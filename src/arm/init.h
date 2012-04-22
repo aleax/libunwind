@@ -25,7 +25,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #include "unwind_i.h"
 
 static inline int
-common_init (struct cursor *c)
+common_init (struct cursor *c, unsigned use_prev_instr)
 {
   int ret, i;
 
@@ -58,10 +58,17 @@ common_init (struct cursor *c)
   if (ret < 0)
     return ret;
 
+  c->sigcontext_format = ARM_SCF_NONE;
+  c->sigcontext_addr = 0;
+  c->sigcontext_sp = 0;
+  c->sigcontext_pc = 0;
+
   /* FIXME: Initialisation for other registers.  */
 
   c->dwarf.args_size = 0;
   c->dwarf.ret_addr_column = 0;
+  c->dwarf.stash_frames = 0;
+  c->dwarf.use_prev_instr = use_prev_instr;
   c->dwarf.pi_valid = 0;
   c->dwarf.pi_is_dynamic = 0;
   c->dwarf.hint = 0;

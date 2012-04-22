@@ -36,6 +36,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #include "mempool.h"
 #include "dwarf.h"
 
+typedef struct
+  {
+    /* no x86-specific fast trace */
+  }
+unw_tdep_frame_t;
+
 struct unw_addr_space
   {
     struct unw_accessors acc;
@@ -60,8 +66,12 @@ struct cursor
     enum
       {
 	X86_SCF_NONE,			/* no signal frame encountered */
-	X86_SCF_LINUX_SIGFRAME,		/* classic x86 sigcontext */
-	X86_SCF_LINUX_RT_SIGFRAME	/* POSIX ucontext_t */
+	X86_SCF_LINUX_SIGFRAME,		/* Linux x86 sigcontext */
+	X86_SCF_LINUX_RT_SIGFRAME,	/* POSIX ucontext_t */
+	X86_SCF_FREEBSD_SIGFRAME,	/* FreeBSD x86 sigcontext */
+	X86_SCF_FREEBSD_SIGFRAME4,	/* FreeBSD 4.x x86 sigcontext */
+	X86_SCF_FREEBSD_OSIGFRAME,	/* FreeBSD pre-4.x x86 sigcontext */
+	X86_SCF_FREEBSD_SYSCALL,	/* FreeBSD x86 syscall */
       }
     sigcontext_format;
     unw_word_t sigcontext_addr;
@@ -227,6 +237,7 @@ dwarf_put (struct dwarf_cursor *c, dwarf_loc_t loc, unw_word_t val)
 
 #endif /* !UNW_LOCAL_ONLY */
 
+#define tdep_getcontext_trace           unw_getcontext
 #define tdep_needs_initialization	UNW_OBJ(needs_initialization)
 #define tdep_init			UNW_OBJ(init)
 /* Platforms that support UNW_INFO_FORMAT_TABLE need to define
@@ -236,6 +247,11 @@ dwarf_put (struct dwarf_cursor *c, dwarf_loc_t loc, unw_word_t val)
 #define tdep_get_elf_image		UNW_ARCH_OBJ(get_elf_image)
 #define tdep_access_reg			UNW_OBJ(access_reg)
 #define tdep_access_fpreg		UNW_OBJ(access_fpreg)
+#define tdep_fetch_frame(c,ip,n)	do {} while(0)
+#define tdep_cache_frame(c,rs)		do {} while(0)
+#define tdep_reuse_frame(c,rs)		do {} while(0)
+#define tdep_stash_frame(c,rs)		do {} while(0)
+#define tdep_trace(cur,addr,n)		(-UNW_ENOINFO)
 
 #ifdef UNW_LOCAL_ONLY
 # define tdep_find_proc_info(c,ip,n)				\
@@ -264,7 +280,8 @@ extern int tdep_search_unwind_table (unw_addr_space_t as, unw_word_t ip,
 				     int need_unwind_info, void *arg);
 extern void *tdep_uc_addr (ucontext_t *uc, int reg);
 extern int tdep_get_elf_image (struct elf_image *ei, pid_t pid, unw_word_t ip,
-			       unsigned long *segbase, unsigned long *mapoff);
+			       unsigned long *segbase, unsigned long *mapoff,
+			       char *path, size_t pathlen);
 extern int tdep_access_reg (struct cursor *c, unw_regnum_t reg,
 			    unw_word_t *valp, int write);
 extern int tdep_access_fpreg (struct cursor *c, unw_regnum_t reg,

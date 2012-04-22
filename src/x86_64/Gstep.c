@@ -26,8 +26,31 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
 #include "unwind_i.h"
-#include "ucontext_i.h"
 #include <signal.h>
+
+/* Recognise PLT entries such as:
+     3bdf0: ff 25 e2 49 13 00 jmpq   *0x1349e2(%rip)
+     3bdf6: 68 ae 03 00 00    pushq  $0x3ae
+     3bdfb: e9 00 c5 ff ff    jmpq   38300 <_init+0x18> */
+static int
+is_plt_entry (struct dwarf_cursor *c)
+{
+  unw_word_t w0, w1;
+  unw_accessors_t *a;
+  int ret;
+
+  a = unw_get_accessors (c->as);
+  if ((ret = (*a->access_mem) (c->as, c->ip, &w0, 0, c->as_arg)) < 0
+      || (ret = (*a->access_mem) (c->as, c->ip + 8, &w1, 0, c->as_arg)) < 0)
+    return 0;
+
+  ret = (((w0 & 0xffff) == 0x25ff)
+	 && (((w0 >> 48) & 0xff) == 0x68)
+	 && (((w1 >> 24) & 0xff) == 0xe9));
+
+  Debug (14, "ip=0x%lx => 0x%016lx 0x%016lx, ret = %d\n", c->ip, w0, w1, ret);
+  return ret;
+}
 
 PROTECTED int
 unw_step (unw_cursor_t *cursor)
@@ -35,11 +58,21 @@ unw_step (unw_cursor_t *cursor)
   struct cursor *c = (struct cursor *) cursor;
   int ret, i;
 
-  Debug (1, "(cursor=%p, ip=0x%016llx)\n",
-	 c, (unsigned long long) c->dwarf.ip);
+#if CONSERVATIVE_CHECKS
+  int val = c->validate;
+  c->validate = 1;
+#endif
+
+  Debug (1, "(cursor=%p, ip=0x%016lx, cfa=0x%016lx)\n",
+	 c, c->dwarf.ip, c->dwarf.cfa);
 
   /* Try DWARF-based unwinding... */
+  c->sigcontext_format = X86_64_SCF_NONE;
   ret = dwarf_step (&c->dwarf);
+
+#if CONSERVATIVE_CHECKS
+  c->validate = val;
+#endif
 
   if (ret < 0 && ret != -UNW_ENOINFO)
     {
@@ -79,40 +112,27 @@ unw_step (unw_cursor_t *cursor)
 
       if (unw_is_signal_frame (cursor))
 	{
-	  unw_word_t ucontext = c->dwarf.cfa;
-
-	  Debug(1, "signal frame, skip over trampoline\n");
-
-	  c->sigcontext_format = X86_64_SCF_LINUX_RT_SIGFRAME;
-	  c->sigcontext_addr = c->dwarf.cfa;
-
-	  rsp_loc = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RSP, 0);
-	  rbp_loc = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RBP, 0);
-	  rip_loc = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RIP, 0);
-
-	  ret = dwarf_get (&c->dwarf, rsp_loc, &c->dwarf.cfa);
+          ret = unw_handle_signal_frame(cursor);
 	  if (ret < 0)
 	    {
-	      Debug (2, "returning %d\n", ret);
-	      return ret;
+	      Debug (2, "returning 0\n");
+	      return 0;
 	    }
-
-	  c->dwarf.loc[RAX] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RAX, 0);
-	  c->dwarf.loc[RDX] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RDX, 0);
-	  c->dwarf.loc[RCX] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RCX, 0);
-	  c->dwarf.loc[RBX] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RBX, 0);
-	  c->dwarf.loc[RSI] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RSI, 0);
-	  c->dwarf.loc[RDI] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RDI, 0);
-	  c->dwarf.loc[RBP] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RBP, 0);
-	  c->dwarf.loc[ R8] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_R8, 0);
-	  c->dwarf.loc[ R9] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_R9, 0);
-	  c->dwarf.loc[R10] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_R10, 0);
-	  c->dwarf.loc[R11] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_R11, 0);
-	  c->dwarf.loc[R12] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_R12, 0);
-	  c->dwarf.loc[R13] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_R13, 0);
-	  c->dwarf.loc[R14] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_R14, 0);
-	  c->dwarf.loc[R15] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_R15, 0);
-	  c->dwarf.loc[RIP] = DWARF_LOC (ucontext + UC_MCONTEXT_GREGS_RIP, 0);
+	}
+      else if (is_plt_entry (&c->dwarf))
+	{
+          /* Like regular frame, CFA = RSP+8, RA = [CFA-8], no regs saved. */
+	  Debug (2, "found plt entry\n");
+          c->frame_info.cfa_reg_offset = 8;
+          c->frame_info.cfa_reg_rsp = -1;
+          c->frame_info.frame_type = UNW_X86_64_FRAME_STANDARD;
+          c->dwarf.loc[RIP] = DWARF_LOC (c->dwarf.cfa, 0);
+          c->dwarf.cfa += 8;
+	}
+      else if (DWARF_IS_NULL_LOC (c->dwarf.loc[RBP]))
+        {
+	  for (i = 0; i < DWARF_NUM_PRESERVED_REGS; ++i)
+	    c->dwarf.loc[i] = DWARF_NULL_LOC;
 	}
       else
 	{
@@ -121,7 +141,8 @@ unw_step (unw_cursor_t *cursor)
 	  ret = dwarf_get (&c->dwarf, c->dwarf.loc[RBP], &rbp);
 	  if (ret < 0)
 	    {
-	      Debug (2, "returning %d\n", ret);
+	      Debug (2, "returning %d [RBP=0x%lx]\n", ret,
+		     DWARF_GET_LOC (c->dwarf.loc[RBP]));
 	      return ret;
 	    }
 
@@ -134,33 +155,47 @@ unw_step (unw_cursor_t *cursor)
 	    }
 	  else
 	    {
-	      unw_word_t rbp1;
-	      Debug (1, "[RBP=0x%Lx] = 0x%Lx (cfa = 0x%Lx)\n",
-		     (unsigned long long) DWARF_GET_LOC (c->dwarf.loc[RBP]),
-		     (unsigned long long) rbp,
-		     (unsigned long long) c->dwarf.cfa);
-
+	      unw_word_t rbp1 = 0;
 	      rbp_loc = DWARF_LOC(rbp, 0);
 	      rsp_loc = DWARF_NULL_LOC;
 	      rip_loc = DWARF_LOC (rbp + 8, 0);
-              /* Heuristic to recognize a bogus frame pointer */
 	      ret = dwarf_get (&c->dwarf, rbp_loc, &rbp1);
-              if (ret || ((rbp1 - rbp) > 0x4000))
-                rbp_loc = DWARF_NULL_LOC;
+	      Debug (1, "[RBP=0x%lx] = 0x%lx (cfa = 0x%lx) -> 0x%lx\n",
+		     (unsigned long) DWARF_GET_LOC (c->dwarf.loc[RBP]),
+		     rbp, c->dwarf.cfa, rbp1);
+
+	      /* Heuristic to determine incorrect guess.  For RBP to be a
+	         valid frame it needs to be above current CFA, but don't
+		 let it go more than a little.  Note that we can't deduce
+		 anything about new RBP (rbp1) since it may not be a frame
+		 pointer in the frame above.  Just check we get the value. */
+              if (ret < 0
+		  || rbp <= c->dwarf.cfa
+		  || (rbp - c->dwarf.cfa) > 0x4000)
+	        {
+                  rip_loc = DWARF_NULL_LOC;
+                  rbp_loc = DWARF_NULL_LOC;
+		}
+
+              c->frame_info.frame_type = UNW_X86_64_FRAME_GUESSED;
+              c->frame_info.cfa_reg_rsp = 0;
+              c->frame_info.cfa_reg_offset = 16;
+              c->frame_info.rbp_cfa_offset = -16;
 	      c->dwarf.cfa += 16;
 	    }
 
 	  /* Mark all registers unsaved */
 	  for (i = 0; i < DWARF_NUM_PRESERVED_REGS; ++i)
 	    c->dwarf.loc[i] = DWARF_NULL_LOC;
+
+          c->dwarf.loc[RBP] = rbp_loc;
+          c->dwarf.loc[RSP] = rsp_loc;
+          c->dwarf.loc[RIP] = rip_loc;
 	}
 
-      c->dwarf.loc[RBP] = rbp_loc;
-      c->dwarf.loc[RSP] = rsp_loc;
-      c->dwarf.loc[RIP] = rip_loc;
       c->dwarf.ret_addr_column = RIP;
 
-      if (!DWARF_IS_NULL_LOC (c->dwarf.loc[RBP]))
+      if (!DWARF_IS_NULL_LOC (c->dwarf.loc[RIP]))
 	{
 	  ret = dwarf_get (&c->dwarf, c->dwarf.loc[RIP], &c->dwarf.ip);
 	  Debug (1, "Frame Chain [RIP=0x%Lx] = 0x%Lx\n",
