@@ -84,6 +84,9 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 	dh_install
+	rm debian/libunwind8-dev/usr/lib/libunwind-setjmp.a
+	rm debian/libunwind8-dev/usr/lib/libunwind-setjmp.so
+	rm debian/libunwind8/usr/lib/libunwind-setjmp.so.*
 #	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
@@ -94,6 +97,7 @@ binary-arch: build install
 #	dh_installcron
 #	dh_installinfo
 	dh_installman
+	rm debian/libunwind8-dev/usr/share/man/man3/libunwind-setjmp.*
 	dh_link
 	dh_strip
 	dh_compress
