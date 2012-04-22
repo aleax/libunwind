@@ -14,7 +14,8 @@ Package: libunwind8-dev
 Section: libdevel
 Architecture: ia64 i386 amd64 ppc64 powerpc armel
 Depends: ${misc:Depends}, libunwind8 (= ${binary:Version})
-Conflicts: libunwind1-dev
+Conflicts: libunwind1-dev, libunwind7-dev
+Replaces: libunwind7-dev
 Description: library to determine the call-chain of a program - development
  The primary goal of this project is to define a portable and efficient C
  programming interface (API) to determine the call-chain of a program.
@@ -29,7 +30,8 @@ Description: library to determine the call-chain of a program - development
 Package: libunwind8
 Architecture: ia64 i386 amd64 ppc64 powerpc armel
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Replaces: libgcc1 (<< 1:4.0.0-2)
+Conflicts: libunwind1-dev, libunwind7
+Replaces: libgcc1 (<< 1:4.0.0-2), libunwind7
 Description: library to determine the call-chain of a program - runtime
  The primary goal of this project is to define a portable and efficient C
  programming interface (API) to determine the call-chain of a program.
