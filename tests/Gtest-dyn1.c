@@ -26,7 +26,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 /* This file tests dynamic code-generation via function-cloning.  */
 
 #include <libunwind.h>
-#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,6 +62,20 @@ struct fdesc
 # define get_fdesc(fdesc,func)	(fdesc = *(struct fdesc *) &(func))
 # define get_funcp(fdesc)	((template_t) &(fdesc))
 # define get_gp(fdesc)		((fdesc).gp)
+#elif __arm__
+struct fdesc
+  {
+    long code;
+    long is_thumb;
+  };
+/* Workaround GCC bug: https://bugs.launchpad.net/gcc-linaro/+bug/721531 */
+# define get_fdesc(fdesc,func)  ({long tmp = (long) &(func); \
+                                  (fdesc).code = (long) &(func) & ~0x1; \
+                                  (fdesc).is_thumb = tmp & 0x1;})
+/*# define get_fdesc(fdesc,func)  ({(fdesc).code = (long) &(func) & ~0x1; \
+                                  (fdesc).is_thumb = (long) &(func) & 0x1;})*/
+# define get_funcp(fdesc)       ((template_t) ((fdesc).code | (fdesc).is_thumb))
+# define get_gp(fdesc)          (0)
 #else
 struct fdesc
   {
@@ -120,7 +133,7 @@ sighandler (int signal)
       name[0] = '\0';
       off[0] = '\0';
       if (unw_get_proc_name (&cursor, name, sizeof (name), &offset) == 0
-	  && off > 0)
+	  && offset > 0)
 	snprintf (off, sizeof (off), "+0x%lx", (long) offset);
       if (verbose)
 	printf ("ip = %lx <%s%s>\n", (long) ip, name, off);
@@ -171,7 +184,12 @@ main (int argc, char *argv[])
   memcpy (mem, (void *) fdesc.code, MAX_FUNC_SIZE);
   mprotect ((void *) ((long) mem & ~(getpagesize () - 1)),
 	    2*getpagesize(), PROT_READ | PROT_WRITE | PROT_EXEC);
+
+#ifdef __GNUC__
+  __clear_cache(mem, mem + MAX_FUNC_SIZE);
+#else
   flush_cache (mem, MAX_FUNC_SIZE);
+#endif
 
   signal (SIGSEGV, sighandler);
 

@@ -58,15 +58,35 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #define x86_64_lock			UNW_OBJ(lock)
 #define x86_64_local_resume		UNW_OBJ(local_resume)
 #define x86_64_local_addr_space_init	UNW_OBJ(local_addr_space_init)
+#define setcontext			UNW_ARCH_OBJ (setcontext)
 #if 0
 #define x86_64_scratch_loc		UNW_OBJ(scratch_loc)
+#endif
+#define x86_64_r_uc_addr		UNW_OBJ(r_uc_addr)
+#define x86_64_sigreturn		UNW_OBJ(sigreturn)
+
+/* By-pass calls to access_mem() when known to be safe. */
+#ifdef UNW_LOCAL_ONLY
+# undef ACCESS_MEM_FAST
+# define ACCESS_MEM_FAST(ret,validate,cur,addr,to)                     \
+  do {                                                                 \
+    if (unlikely(validate))                                            \
+      (ret) = dwarf_get ((cur), DWARF_MEM_LOC ((cur), (addr)), &(to)); \
+    else                                                               \
+      (ret) = 0, (to) = *(unw_word_t *)(addr);                         \
+  } while (0)
 #endif
 
 extern void x86_64_local_addr_space_init (void);
 extern int x86_64_local_resume (unw_addr_space_t as, unw_cursor_t *cursor,
 			     void *arg);
+extern int setcontext (const ucontext_t *ucp);
+
 #if 0
 extern dwarf_loc_t x86_64_scratch_loc (struct cursor *c, unw_regnum_t reg);
 #endif
+
+extern void *x86_64_r_uc_addr (ucontext_t *uc, int reg);
+extern NORETURN void x86_64_sigreturn (unw_cursor_t *cursor);
 
 #endif /* unwind_i_h */

@@ -54,8 +54,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #include <string.h>
 #include <unistd.h>
 
-#ifdef HAVE_ENDIAN_H
+#if defined(HAVE_ENDIAN_H)
 # include <endian.h>
+#elif defined(HAVE_SYS_ENDIAN_H)
+# include <sys/endian.h>
 #else
 # define __LITTLE_ENDIAN	1234
 # define __BIG_ENDIAN		4321
@@ -178,23 +180,38 @@ typedef sigset_t intrmask_t;
 
 extern intrmask_t unwi_full_mask;
 
+/* Silence compiler warnings about variables which are used only if libunwind
+   is configured in a certain way */
+static inline void mark_as_used(void *v) {
+}
+
+#if defined(CONFIG_BLOCK_SIGNALS)
+# define SIGPROCMASK(how, new_mask, old_mask) \
+  sigprocmask((how), (new_mask), (old_mask))
+#else
+# define SIGPROCMASK(how, new_mask, old_mask) mark_as_used(old_mask)
+#endif
+
 #define define_lock(name) \
   pthread_mutex_t name = PTHREAD_MUTEX_INITIALIZER
 #define lock_init(l)		mutex_init (l)
 #define lock_acquire(l,m)				\
 do {							\
-  sigprocmask (SIG_SETMASK, &unwi_full_mask, &(m));	\
+  SIGPROCMASK (SIG_SETMASK, &unwi_full_mask, &(m));	\
   mutex_lock (l);					\
 } while (0)
 #define lock_release(l,m)			\
 do {						\
   mutex_unlock (l);				\
-  sigprocmask (SIG_SETMASK, &(m), NULL);	\
+  SIGPROCMASK (SIG_SETMASK, &(m), NULL);	\
 } while (0)
 
 #define SOS_MEMORY_SIZE 16384	/* see src/mi/mempool.c */
 
-#define GET_MEMORY(mem, size_in_bytes)				    \
+#ifndef MAP_ANONYMOUS
+# define MAP_ANONYMOUS MAP_ANON
+#endif
+#define GET_MEMORY(mem, size)				    		    \
 do {									    \
   /* Hopefully, mmap() goes straight through to a system call stub...  */   \
   mem = mmap (0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, \
@@ -265,10 +282,10 @@ do {									\
 # define Dprintf(format...)
 #endif
 
-static ALWAYS_INLINE void
+static ALWAYS_INLINE int
 print_error (const char *string)
 {
-  write (2, string, strlen (string));
+  return write (2, string, strlen (string));
 }
 
 #define mi_init		UNWI_ARCH_OBJ(mi_init)
@@ -283,6 +300,14 @@ struct elf_image
     void *image;		/* pointer to mmap'd image */
     size_t size;		/* (file-) size of the image */
   };
+
+/* Provide a place holder for architecture to override for fast access
+   to memory when known not to need to validate and know the access
+   will be local to the process. A suitable override will improve
+   unw_tdep_trace() performance in particular. */
+#define ACCESS_MEM_FAST(ret,validate,cur,addr,to) \
+  do { (ret) = dwarf_get ((cur), DWARF_MEM_LOC ((cur), (addr)), &(to)); } \
+  while (0)
 
 #include "tdep/libunwind_i.h"
 

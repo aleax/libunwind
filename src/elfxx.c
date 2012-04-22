@@ -25,17 +25,20 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
 #include <stdio.h>
+#include <sys/param.h>
 
 #include "libunwind_i.h"
 
 HIDDEN int
 elf_w (valid_object) (struct elf_image *ei)
 {
-  if (ei->size <= EI_CLASS)
+  if (ei->size <= EI_VERSION)
     return 0;
 
   return (memcmp (ei->image, ELFMAG, SELFMAG) == 0
-	  && ((uint8_t *) ei->image)[EI_CLASS] == ELF_CLASS);
+	  && ((uint8_t *) ei->image)[EI_CLASS] == ELF_CLASS
+	  && ((uint8_t *) ei->image)[EI_VERSION] != EV_NONE
+	  && ((uint8_t *) ei->image)[EI_VERSION] <= EV_CURRENT);
 }
 
 
@@ -147,7 +150,7 @@ elf_w (get_proc_name) (unw_addr_space_t as, pid_t pid, unw_word_t ip,
   Elf_W (Phdr) *phdr;
   int i, ret;
 
-  ret = tdep_get_elf_image (&ei, pid, ip, &segbase, &mapoff);
+  ret = tdep_get_elf_image (&ei, pid, ip, &segbase, &mapoff, NULL, 0);
   if (ret < 0)
     return ret;
 

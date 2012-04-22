@@ -27,19 +27,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
 #define UNW_LOCAL_ONLY
 #include <libunwind.h>
+#include <libunwind_i.h>
+#include <string.h>
 
 /* See glibc manual for a description of this function.  */
 
-int
-backtrace (void **buffer, int size)
+static ALWAYS_INLINE int
+slow_backtrace (void **buffer, int size, unw_context_t *uc)
 {
   unw_cursor_t cursor;
-  unw_context_t uc;
   unw_word_t ip;
   int n = 0;
 
-  unw_getcontext (&uc);
-  if (unw_init_local (&cursor, &uc) < 0)
+  if (unlikely (unw_init_local (&cursor, uc) < 0))
     return 0;
 
   while (unw_step (&cursor) > 0)
@@ -53,5 +53,29 @@ backtrace (void **buffer, int size)
     }
   return n;
 }
+
+int
+unw_backtrace (void **buffer, int size)
+{
+  unw_cursor_t cursor;
+  unw_context_t uc;
+  int n = size;
+
+  tdep_getcontext_trace (&uc);
+
+  if (unlikely (unw_init_local (&cursor, &uc) < 0))
+    return 0;
+
+  if (unlikely (tdep_trace (&cursor, buffer, &n) < 0))
+    {
+      unw_getcontext (&uc);
+      return slow_backtrace (buffer, size, &uc);
+    }
+
+  return n;
+}
+
+extern int backtrace (void **buffer, int size)
+  __attribute__((weak, alias("unw_backtrace")));
 
 #endif /* !UNW_REMOTE_ONLY */

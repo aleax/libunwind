@@ -32,6 +32,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #include "elf64.h"
 #include "mempool.h"
 
+typedef struct
+  {
+    /* no ia64-specific fast trace */
+  }
+unw_tdep_frame_t;
+
 enum ia64_pregnum
   {
     /* primary unat: */
@@ -210,6 +216,7 @@ struct ia64_global_unwind_state
 # endif
   };
 
+#define tdep_getcontext_trace           unw_getcontext
 #define tdep_needs_initialization	unw.needs_initialization
 #define tdep_init			UNW_OBJ(init)
 /* Platforms that support UNW_INFO_FORMAT_TABLE need to define
@@ -220,6 +227,11 @@ struct ia64_global_unwind_state
 #define tdep_get_elf_image		UNW_ARCH_OBJ(get_elf_image)
 #define tdep_access_reg			UNW_OBJ(access_reg)
 #define tdep_access_fpreg		UNW_OBJ(access_fpreg)
+#define tdep_fetch_frame(c,ip,n)	do {} while(0)
+#define tdep_cache_frame(c,rs)		do {} while(0)
+#define tdep_reuse_frame(c,rs)		do {} while(0)
+#define tdep_stash_frame(c,rs)		do {} while(0)
+#define tdep_trace(cur,addr,n)		(-UNW_ENOINFO)
 #define tdep_get_as(c)			((c)->as)
 #define tdep_get_as_arg(c)		((c)->as_arg)
 #define tdep_get_ip(c)			((c)->ip)
@@ -244,7 +256,8 @@ extern void tdep_put_unwind_info (unw_addr_space_t as,
 extern void *tdep_uc_addr (ucontext_t *uc, unw_regnum_t regnum,
 			   uint8_t *nat_bitnr);
 extern int tdep_get_elf_image (struct elf_image *ei, pid_t pid, unw_word_t ip,
-			       unsigned long *segbase, unsigned long *mapoff);
+			       unsigned long *segbase, unsigned long *mapoff,
+			       char *path, size_t pathlen);
 extern int tdep_access_reg (struct cursor *c, unw_regnum_t reg,
 			    unw_word_t *valp, int write);
 extern int tdep_access_fpreg (struct cursor *c, unw_regnum_t reg,
