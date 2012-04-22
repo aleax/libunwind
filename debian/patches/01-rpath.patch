@@ -1,15 +1,11 @@
 From: Daigo Moriwaki <daigo@debian.org>
 Subject: rpath should not be used. See http://wiki.debian.org/RpathIssue
 
-diff -urNad libunwind-0.99~/configure.in libunwind-0.99/configure.in
---- libunwind-0.99~/configure.in	2009-05-09 01:34:10.000000000 +0900
-+++ libunwind-0.99/configure.in	2009-08-29 10:41:18.000000000 +0900
-@@ -17,10 +17,20 @@
- AC_PROG_CXX
- AC_PROG_INSTALL
- AC_PROG_MAKE_SET
--AM_PROG_LIBTOOL
-+AC_PROG_LIBTOOL
+Index: pkg-libunwind/configure.in
+===================================================================
+--- pkg-libunwind.orig/configure.in	2012-04-22 21:26:11.000000000 +0900
++++ pkg-libunwind/configure.in	2012-04-22 21:29:00.000000000 +0900
+@@ -21,6 +21,16 @@
  AM_PROG_AS
  AM_PROG_CC_C_O
  
@@ -25,4 +21,4 @@ diff -urNad libunwind-0.99~/configure.in libunwind-0.99/configure.in
 +
  dnl Checks for libraries.
  AC_CHECK_LIB(uca, __uc_get_grs)
- CHECK_ATOMIC_OPS
+ OLD_LIBS=${LIBS}
