@@ -5,6 +5,6 @@ HIDDEN {
 	_save*;
 };
 
-libunwind7 {
+libunwind8 {
 	*;
 };
