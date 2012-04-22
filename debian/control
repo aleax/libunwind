@@ -10,10 +10,10 @@ Vcs-Git: git://git.debian.org/git/collab-maint/libunwind.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/libunwind.git
 DM-Upload-Allowed: yes
 
-Package: libunwind7-dev
+Package: libunwind8-dev
 Section: libdevel
-Architecture: ia64 i386 amd64 ppc64 powerpc
-Depends: ${misc:Depends}, libunwind7 (= ${binary:Version})
+Architecture: ia64 i386 amd64 ppc64 powerpc armel
+Depends: ${misc:Depends}, libunwind8 (= ${binary:Version})
 Conflicts: libunwind1-dev
 Description: library to determine the call-chain of a program - development
  The primary goal of this project is to define a portable and efficient C
@@ -26,8 +26,8 @@ Description: library to determine the call-chain of a program - development
  .
  This package includes the development support files. 
 
-Package: libunwind7
-Architecture: ia64 i386 amd64 ppc64 powerpc
+Package: libunwind8
+Architecture: ia64 i386 amd64 ppc64 powerpc armel
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Replaces: libgcc1 (<< 1:4.0.0-2)
 Description: library to determine the call-chain of a program - runtime
@@ -43,8 +43,8 @@ Description: library to determine the call-chain of a program - runtime
 
 Package: libunwind-setjmp0-dev
 Section: libdevel
-Architecture: ia64 i386 amd64 ppc64 powerpc
-Depends: ${misc:Depends}, libunwind7-dev (= ${binary:Version}), libunwind-setjmp0 (= ${binary:Version})
+Architecture: ia64 i386 amd64 ppc64 powerpc armel
+Depends: ${misc:Depends}, libunwind8-dev (= ${binary:Version}), libunwind-setjmp0 (= ${binary:Version})
 Description: libunwind-based non local goto - development
  The unwind-setjmp library offers a libunwind-based implementation of
  non-local gotos. This implementation is intended to be a drop-in
@@ -55,7 +55,7 @@ Description: libunwind-based non local goto - development
  This package includes the development support files
 
 Package: libunwind-setjmp0
-Architecture: ia64 i386 amd64 ppc64 powerpc
+Architecture: ia64 i386 amd64 ppc64 powerpc armel
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: libunwind-based non local goto - runtime
  The unwind-setjmp library offers a libunwind-based implementation of
