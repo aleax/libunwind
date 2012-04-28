@@ -1,16 +1,5 @@
 libunwind (1.0.1-1) unstable; urgency=low
 
-  * New upstream release. (Closes: #558928, #669710)
-  * debian/control:
-    - Bumped up the version in the package names to match the library's
-      version, libunwind8.
-    - Support the armel architecture as well.
-  * debian/patches/20120422_tests_Makefile_am.patch: added to run make check.
-
- -- Daigo Moriwaki <daigo@debian.org>  Sun, 22 Apr 2012 22:00:44 +0900
-
-libunwind (0.99-0.4) unstable; urgency=low
-
   [ Jari Aalto ]
   * Non-maintainer upload.
   * Remove deprecated dpatch and upgrade to packaging format "3.0 quilt".
@@ -31,8 +20,15 @@ libunwind (0.99-0.4) unstable; urgency=low
    + Added myself to Maintainer, after no response from the previous
      maintainers since May 2009.
   * NMU version 0.99-0.3 has been applied. (Closes: #631622)
+  * New upstream release. (Closes: #558928, #669710)
+  * debian/control:
+    - Bumped up the version in the package names to match the library's
+      version, libunwind8.
+    - Support the armel architecture as well.
+  * debian/patches/20120422_tests_Makefile_am.patch: added to run make check.
+  * debian/copyright: Updated with copyright-format-1.0.
 
- -- Daigo Moriwaki <daigo@debian.org>  Sun, 22 Apr 2012 19:22:33 +0900
+ -- Daigo Moriwaki <daigo@debian.org>  Sat, 28 Apr 2012 15:48:35 +0900
 
 libunwind (0.99-0.3) unstable; urgency=low
 
