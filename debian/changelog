@@ -1,3 +1,11 @@
+libunwind (1.0.1-2) unstable; urgency=low
+
+  [ Luca Falavigna ]
+  * 20120707_ia64_FTBFS.patch:
+    - Cherry pick patch from upstream to fix FTBFS on ia64 (Closes: #680623).
+
+ -- Daigo Moriwaki <daigo@debian.org>  Sun, 08 Jul 2012 13:13:11 +0900
+
 libunwind (1.0.1-1) unstable; urgency=low
 
   [ Jari Aalto ]

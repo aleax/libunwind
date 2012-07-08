@@ -1,2 +1,3 @@
 01-rpath.patch
 20120422_tests_Makefile_am.patch
+20120707_ia64_FTBFS.patch
