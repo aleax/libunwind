@@ -7,6 +7,12 @@ libunwind (1.0.1-2) unstable; urgency=low
   [ Daigo Moriwaki ]
   * debian/control: Removes libunwind8's Conflicts and Replaces with
     libunwind7. (Closes: #670957)
+  * Imports Ubuntu's patch, supporting the armhf architecture.
+    Thanks to James Page <james.page@ubuntu.com>.  (Closes: 680308)
+    - 20120704_fix_arm_ftbfs.patch
+    - debian/control:
+      + Supports armhf.
+      + libatomic-ops-dev is no longer required for Build-Depends.
 
  -- Daigo Moriwaki <daigo@debian.org>  Sun, 08 Jul 2012 13:13:11 +0900
 
