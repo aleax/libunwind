@@ -1,0 +1,13 @@
+Index: pkg-libunwind/configure.in
+===================================================================
+--- pkg-libunwind.orig/configure.in	2012-09-16 14:31:01.000000000 +0900
++++ pkg-libunwind/configure.in	2012-09-16 14:33:28.000000000 +0900
+@@ -255,7 +255,7 @@
+ #endif], [intel_compiler=yes], [intel_compiler=no])
+ 
+ if test x$GCC = xyes -a x$intel_compiler != xyes; then
+-  CFLAGS="${CFLAGS} -fexceptions -Wall -Wsign-compare"
++  CFLAGS="${CFLAGS} -fexceptions -fPIC -Wall -Wsign-compare"
+   LIBCRTS="-lgcc"
+ fi
+ AC_MSG_RESULT([$intel_compiler])
