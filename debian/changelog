@@ -1,7 +1,7 @@
 libunwind (1.0.1-3) unstable; urgency=low
 
-  * Added debian/patches/20120916_PIC.patch: Compiled with the PIC format.
-    (Closes: #682196)
+  * debian/rules: 
+    - compile with the PIC format even for static libraries.  (Closes: #682196)
 
  -- Daigo Moriwaki <daigo@debian.org>  Sun, 16 Sep 2012 14:34:23 +0900
 
