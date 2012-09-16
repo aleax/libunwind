@@ -1,5 +1,5 @@
-debian/tmp/usr/include/* usr/include
-debian/tmp/usr/lib/libunwind-*.a usr/lib
-debian/tmp/usr/lib/libunwind-*.so usr/lib
-debian/tmp/usr/lib/libunwind.a usr/lib
-debian/tmp/usr/lib/libunwind.so usr/lib
+usr/include/*
+usr/lib/*/libunwind-*.a
+usr/lib/*/libunwind-*.so
+usr/lib/*/libunwind.a
+usr/lib/*/libunwind.so
