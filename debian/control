@@ -43,6 +43,18 @@ Description: library to determine the call-chain of a program - runtime
  .
  This package includes the shared libraries
 
+Package: libunwind8-dbg
+Section: debug
+Priority: extra
+Architecture: ia64 i386 amd64 ppc64 powerpc armel armhf
+Depends: ${misc:Depends}, ${shlibs:Depends}, libunwind8 (= ${binary:Version})
+Description: library to determine the call-chain of a program - runtime
+ Contains debugging symbols for libunwind8.
+ .
+ This package is provided primarily to provide a backtrace with names
+ in a debugger, this makes it somewhat easier to interpret core
+ dumps.  Most people will not need this package.
+
 Package: libunwind-setjmp0-dev
 Section: libdevel
 Architecture: ia64 i386 amd64 ppc64 powerpc armel armhf
@@ -67,3 +79,15 @@ Description: libunwind-based non local goto - runtime
  up a non-local goto via one of the setjmp() routines is very fast.
  .
  This package includes the shared library 
+
+Package: libunwind-setjmp0-dbg
+Section: debug
+Priority: extra
+Architecture: ia64 i386 amd64 ppc64 powerpc armel armhf
+Depends: ${misc:Depends}, ${shlibs:Depends}, libunwind-setjmp0 (= ${binary:Version})
+Description: libunwind-based non local goto - runtime
+ Contains debugging symbols for libunwind8.
+ .
+ This package is provided primarily to provide a backtrace with names
+ in a debugger, this makes it somewhat easier to interpret core
+ dumps.  Most people will not need this package.

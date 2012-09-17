@@ -1,6 +1,8 @@
 libunwind (1.0.1-4) unstable; urgency=low
 
   * Converted the build style to dh.
+  * debian/control: Provides debug packages, libunwind8-dbg and
+    libunwind-setjmp0-dbg.  (Closes: #687325)
 
  -- Daigo Moriwaki <daigo@debian.org>  Sun, 16 Sep 2012 17:16:56 +0900
 

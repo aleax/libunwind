@@ -22,5 +22,12 @@ override_dh_install:
 override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog
 
+override_dh_strip:
+	dh_strip -plibunwind8 --dbg-package=libunwind8-dbg
+	dh_strip -plibunwind-setjmp0 --dbg-package=libunwind-setjmp0-dbg
+
 get-orig-source:
 	uscan --verbose --force-download --rename --repack --destdir=..
+
+.PHONY: override_dh_auto_configure override_dh_install override_dh_installchangelogs override_dh_strip get-orig-source
+
