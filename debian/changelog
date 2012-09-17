@@ -7,6 +7,8 @@ libunwind (1.0.1-4) unstable; urgency=low
     - Pre-Depends: multiarch-support
   * Removed libunwind-setjmp0.postrm libunwind-setjmp0.preinst:
     libunwind7 and libunwind8 can not be reconciled.
+  * Added debian/source/options to ignore changes on auto-generated files
+    such as config.{sub,guess}.
 
  -- Daigo Moriwaki <daigo@debian.org>  Sun, 16 Sep 2012 17:16:56 +0900
 
