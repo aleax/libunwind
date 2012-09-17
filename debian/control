@@ -3,7 +3,6 @@ Priority: optional
 Section: libs
 Maintainer: Daigo Moriwaki <daigo@debian.org>
 Uploaders: Matthieu Delahaye <matthieu@debian.org>, Al Stone <ahs3@debian.org>
-Pre-Depends: multiarch-support
 Build-Depends: debhelper (>= 9), autotools-dev, dh-autoreconf
 Standards-Version: 3.9.3
 Homepage: http://www.nongnu.org/libunwind
@@ -30,6 +29,7 @@ Description: library to determine the call-chain of a program - development
 
 Package: libunwind8
 Architecture: ia64 i386 amd64 ppc64 powerpc armel armhf
+Pre-Depends: multiarch-support
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Conflicts: libunwind1-dev
 Replaces: libgcc1 (<< 1:4.0.0-2)
@@ -71,6 +71,7 @@ Description: libunwind-based non local goto - development
 
 Package: libunwind-setjmp0
 Architecture: ia64 i386 amd64 ppc64 powerpc armel armhf
+Pre-Depends: multiarch-support
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: libunwind-based non local goto - runtime
  The unwind-setjmp library offers a libunwind-based implementation of
